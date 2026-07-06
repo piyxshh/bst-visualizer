@@ -44,6 +44,14 @@ const operationLabels = {
   postorder: 'Postorder',
 };
 
+function treeLayoutKey(node) {
+  if (!node) {
+    return 'empty';
+  }
+
+  return `${node.value}(${treeLayoutKey(node.left)})(${treeLayoutKey(node.right)})`;
+}
+
 function App() {
   const [tree, setTree] = useState(INITIAL_TREE);
   const [input, setInput] = useState(SAMPLE_INPUT);
@@ -57,8 +65,9 @@ function App() {
 
   const activeStep = trace[stepIndex] ?? null;
   const visibleTree = activeStep?.tree ?? tree;
-  const layout = useMemo(() => layoutTree(visibleTree), [visibleTree]);
-  const stats = useMemo(() => getTreeStats(visibleTree), [visibleTree]);
+  const visibleTreeKey = treeLayoutKey(visibleTree);
+  const layout = useMemo(() => layoutTree(visibleTree), [visibleTreeKey]);
+  const stats = useMemo(() => getTreeStats(visibleTree), [visibleTreeKey]);
   const operation = activeStep?.operation ?? lastRunner;
   const pathLength = activeStep?.pathLength ?? 0;
 
